@@ -16,7 +16,7 @@ const s = {
   } as React.CSSProperties,
   label: {
     fontSize: '11pt', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase',
-    color: '#3b82f6', marginBottom: '2mm',
+    color: 'var(--color-primary, #3b82f6)', marginBottom: '2mm',
   } as React.CSSProperties,
   title: {
     fontSize: '28pt', fontWeight: 700, marginBottom: '2mm', lineHeight: 1.2,

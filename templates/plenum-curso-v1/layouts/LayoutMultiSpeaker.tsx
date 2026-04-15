@@ -59,7 +59,8 @@ function addMm(base: number, delta: string | undefined): string {
 }
 
 export function LayoutMultiSpeaker({ data }: Props) {
-  const speakersCardMt = data.sectionOverrides?.speakers?.margin_top ? addMm(0, data.sectionOverrides.speakers.margin_top) : undefined;
+  const speakersCardMargin = data.sectionOverrides?.speakers?.margin_top ?? undefined;
+  const speakersScale = parseFloat(data.sectionOverrides?.speakers?.scale || '0');
 
   return (
     <>
@@ -83,7 +84,8 @@ export function LayoutMultiSpeaker({ data }: Props) {
             role={instructor.role}
             bio={instructor.bio}
             photoUrl={instructor.photoUrl}
-            cardMarginTop={speakersCardMt}
+            cardMargin={speakersCardMargin}
+            scale={speakersScale}
           />
         ))}
         <img src={data.assets.logoBranco} alt="Logo" style={footerLogo} />

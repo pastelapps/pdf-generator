@@ -14,16 +14,23 @@ const sectionOverridesSchema = z.object({
     margin_top: z.string().optional(),
     margin_bottom: z.string().optional(),
     margin_lateral: z.string().optional(),
+    icon_size: z.string().optional(),
+    scale: z.string().optional(),
   }).optional(),
   audience: z.object({
     margin_top: z.string().optional(),
     card_margin_bottom: z.string().optional(),
+    card_padding_vertical: z.string().optional(),
+    card_font_size: z.string().optional(),
+    icon_size: z.string().optional(),
   }).optional(),
   program: z.object({
     day_margin_top: z.string().optional(),
   }).optional(),
   speakers: z.object({
     margin_top: z.string().optional(),
+    force_compact: z.string().optional(),
+    scale: z.string().optional(),
   }).optional(),
 }).optional();
 

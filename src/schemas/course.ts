@@ -25,7 +25,7 @@ export const courseSchema = z.object({
   category_label: z.string(),
   design_system_id: z.string().uuid(),
   about_heading: z.string(),
-  about_subheading: z.string(),
+  about_subheading: z.string().nullable().default(''),
   about_cards: z.array(aboutCardSchema),
   audience_heading: z.string(),
   audience_cards: z.array(audienceCardSchema),

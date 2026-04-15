@@ -53,7 +53,6 @@ function addMm(base: number, delta: string | undefined): string {
 
 export function LayoutSingleSpeaker({ data }: Props) {
   const instructor = data.instructors[0]!;
-  const speakersCardMt = data.sectionOverrides?.speakers?.margin_top ? addMm(0, data.sectionOverrides.speakers.margin_top) : undefined;
 
   return (
     <>
@@ -66,7 +65,7 @@ export function LayoutSingleSpeaker({ data }: Props) {
       {/* Página 3+: Programação (fundo branco, quebra natural) */}
       <Program data={data} />
 
-      {/* Página: Palestrante + Garanta Vaga + Parceiros */}
+      {/* Página: Palestrante + Somos Referência + Parceiros */}
       <div style={{ ...darkPageFixed, breakBefore: 'page' as const }}>
         <div style={sectionLabel}>Palestrantes</div>
         <h2 style={sectionTitle}>Palestrantes</h2>
@@ -75,15 +74,14 @@ export function LayoutSingleSpeaker({ data }: Props) {
           role={instructor.role}
           bio={instructor.bio}
           photoUrl={instructor.photoUrl}
-          cardMarginTop={speakersCardMt}
         />
-        <GarantaVaga data={data} />
+        <SomosReferencia fotosEvento={data.assets.fotosEvento} />
         <Parceiros instituicoes={data.assets.instituicoes} />
       </div>
 
-      {/* Última página: Somos Referência + Depoimentos + Contato */}
+      {/* Última página: Garanta Vaga + Depoimentos + Contato */}
       <div style={{ ...darkPageFixed, breakBefore: 'page' as const }}>
-        <SomosReferencia fotosEvento={data.assets.fotosEvento} />
+        <GarantaVaga data={data} />
         <Depoimentos depoentes={data.assets.depoentes} />
         <Contato logoBranco={data.assets.logoBranco} />
       </div>

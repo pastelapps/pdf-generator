@@ -10,16 +10,23 @@ export type SectionOverrides = {
     margin_top?: string;
     margin_bottom?: string;
     margin_lateral?: string;
+    icon_size?: string;
+    scale?: string;
   };
   audience?: {
     margin_top?: string;
     card_margin_bottom?: string;
+    card_padding_vertical?: string;
+    card_font_size?: string;
+    icon_size?: string;
   };
   program?: {
     day_margin_top?: string;
   };
   speakers?: {
     margin_top?: string;
+    force_compact?: string;
+    scale?: string;
   };
 };
 

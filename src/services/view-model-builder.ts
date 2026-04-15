@@ -17,7 +17,8 @@ function loadDepoimentos(): Depoente[] {
 export function buildViewModel(data: CourseData, editionId: string, sectionOverrides?: SectionOverrides): ViewModel {
   const { course, edition, instructors, designSystem } = data;
 
-  const layoutVariant = instructors.length === 1 ? 'single-speaker' : 'multi-speaker';
+  const forceCompact = sectionOverrides?.speakers?.force_compact === 'true';
+  const layoutVariant = (forceCompact || instructors.length > 1) ? 'multi-speaker' : 'single-speaker';
 
   const programDays = normalizeProgramDays(edition.program_days as any);
 
