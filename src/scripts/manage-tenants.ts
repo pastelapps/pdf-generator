@@ -9,7 +9,7 @@ function generateToken(prefix: string): string {
 function printUsage(): void {
   console.log(`
 Uso:
-  npx tsx src/scripts/manage-tenants.ts add --name "Plenum" --prefix plnm --url "https://..." --key "..." [--bucket pdfs] [--folder generated]
+  npx tsx src/scripts/manage-tenants.ts add --name "Plenum" --prefix plnm --url "https://..." --key "..." [--bucket pdfs] [--folder generated] [--template plenum-curso-v1]
   npx tsx src/scripts/manage-tenants.ts list
   npx tsx src/scripts/manage-tenants.ts revoke <token>
 `);
@@ -39,7 +39,7 @@ initTenantDb();
 switch (command) {
   case 'add': {
     const opts = parseArgs(rest);
-    const { name, prefix, url, key, bucket, folder } = opts;
+    const { name, prefix, url, key, bucket, folder, template } = opts;
 
     if (!name || !prefix || !url || !key) {
       console.error('Erro: --name, --prefix, --url e --key são obrigatórios');
@@ -55,14 +55,16 @@ switch (command) {
       supabase_key: key,
       storage_bucket: bucket,
       storage_folder: folder,
+      default_template: template,
     });
 
     console.log('\nTenant criado com sucesso!\n');
-    console.log(`  Nome:   ${tenant.name}`);
-    console.log(`  Token:  ${tenant.token}`);
-    console.log(`  URL:    ${tenant.supabase_url}`);
-    console.log(`  Bucket: ${tenant.storage_bucket}`);
-    console.log(`  Folder: ${tenant.storage_folder}`);
+    console.log(`  Nome:     ${tenant.name}`);
+    console.log(`  Token:    ${tenant.token}`);
+    console.log(`  URL:      ${tenant.supabase_url}`);
+    console.log(`  Bucket:   ${tenant.storage_bucket}`);
+    console.log(`  Folder:   ${tenant.storage_folder}`);
+    console.log(`  Template: ${tenant.default_template}`);
     console.log();
     break;
   }
@@ -79,10 +81,11 @@ switch (command) {
     for (const t of tenants) {
       const status = t.active ? 'ATIVO' : 'INATIVO';
       console.log(`  [${status}] ${t.name}`);
-      console.log(`    Token:  ${t.token}`);
-      console.log(`    URL:    ${t.supabase_url}`);
-      console.log(`    Bucket: ${t.storage_bucket}/${t.storage_folder}`);
-      console.log(`    Criado: ${t.created_at}`);
+      console.log(`    Token:    ${t.token}`);
+      console.log(`    URL:      ${t.supabase_url}`);
+      console.log(`    Bucket:   ${t.storage_bucket}/${t.storage_folder}`);
+      console.log(`    Template: ${t.default_template}`);
+      console.log(`    Criado:   ${t.created_at}`);
       console.log();
     }
     break;

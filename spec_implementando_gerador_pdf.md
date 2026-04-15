@@ -47,11 +47,27 @@ O token é armazenado na tabela interna `tenants` (SQLite local do microserviço
 O token de API deve ser armazenado como **secret/variável de ambiente** no sistema que fará a chamada. **Nunca expor no client-side.**
 
 ```env
-PDF_GENERATOR_API_URL=http://localhost:3000
+PDF_GENERATOR_API_URL=http://77.237.247.129:59542
 PDF_GENERATOR_API_TOKEN=plnm-621e4b511104b6c63ccd6b3f5d2d178e
 ```
 
 > **IMPORTANTE:** A `supabase_key` dentro do tenant é a **Service Role Key** do Supabase. Ela é configurada uma vez no microserviço e nunca é exposta na API. O frontend só precisa do `token` do tenant para autenticar.
+
+### Padronização dos secrets
+
+Para integração via Supabase Edge Functions, o padrão recomendado é usar sempre os mesmos nomes de secret:
+
+```env
+PDF_GENERATOR_URL=http://77.237.247.129:59542
+PDF_GENERATOR_API_TOKEN=plnm-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Definição:
+
+- `PDF_GENERATOR_URL`: URL base pública do serviço de geração de PDF
+- `PDF_GENERATOR_API_TOKEN`: token do tenant autorizado a usar esse serviço
+
+Para o cenário atual da Plenum, esse token representa o tenant da Plenum. Se no futuro existir outro tenant com outro template, o padrão pode continuar o mesmo, mudando apenas o valor do token e, se necessário, a URL do serviço.
 
 ### Respostas de erro de autenticação
 
@@ -424,7 +440,7 @@ serve(async (req) => {
 ### 7.3 Chamada via cURL
 
 ```bash
-curl -X POST https://pdf-generator.seudominio.com/api/v1/generate-pdf \
+curl -X POST http://77.237.247.129:59542/api/v1/generate-pdf \
   -H "Authorization: Bearer plnm-621e4b511104b6c63ccd6b3f5d2d178e" \
   -H "Content-Type: application/json" \
   -d '{

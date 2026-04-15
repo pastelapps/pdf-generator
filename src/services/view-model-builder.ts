@@ -1,20 +1,9 @@
 import type { CourseData } from './course-loader.js';
-import type { ViewModel, Depoente, SectionOverrides } from '../schemas/view-model.js';
+import type { ViewModel, SectionOverrides } from '../schemas/view-model.js';
 import { normalizeProgramDays } from '../utils/program-normalizer.js';
-import { getAssets, assetUrl } from '../utils/asset-resolver.js';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+import { getAssets, loadDepoimentos } from '../utils/asset-resolver.js';
 
-function loadDepoimentos(): Depoente[] {
-  const raw = readFileSync(path.resolve(process.cwd(), 'assets/depoimentos.json'), 'utf-8');
-  const data = JSON.parse(raw) as Array<{ name: string; role: string; quote: string; photo: string }>;
-  return data.map(d => ({
-    ...d,
-    photo: assetUrl(d.photo.replace(/^\/assets\//, '')),
-  }));
-}
-
-export function buildViewModel(data: CourseData, editionId: string, sectionOverrides?: SectionOverrides): ViewModel {
+export function buildViewModel(data: CourseData, editionId: string, tenantName: string, sectionOverrides?: SectionOverrides): ViewModel {
   const { course, edition, instructors, designSystem } = data;
 
   const forceCompact = sectionOverrides?.speakers?.force_compact === 'true';
@@ -34,8 +23,8 @@ export function buildViewModel(data: CourseData, editionId: string, sectionOverr
     '--color-accent': designSystem.color_accent,
   };
 
-  const assets = getAssets();
-  const depoentes = loadDepoimentos();
+  const assets = getAssets(tenantName);
+  const depoentes = loadDepoimentos(tenantName);
 
   // Build cover frame URL from design system hero_frames_path + frame 1
   let coverFrameUrl: string | null = null;

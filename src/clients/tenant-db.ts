@@ -10,6 +10,7 @@ export type Tenant = {
   supabase_key: string;
   storage_bucket: string;
   storage_folder: string;
+  default_template: string;
   active: number;
   created_at: string;
 };
@@ -31,10 +32,19 @@ export function initTenantDb(): void {
       supabase_key TEXT NOT NULL,
       storage_bucket TEXT NOT NULL DEFAULT 'pdfs',
       storage_folder TEXT NOT NULL DEFAULT 'generated',
+      default_template TEXT NOT NULL DEFAULT 'plenum-curso-v1',
       active INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `);
+
+  // Migration: add default_template column if missing (existing DBs)
+  const columns = db.prepare("PRAGMA table_info(tenants)").all() as Array<{ name: string }>;
+  const hasDefaultTemplate = columns.some(c => c.name === 'default_template');
+  if (!hasDefaultTemplate) {
+    db.exec("ALTER TABLE tenants ADD COLUMN default_template TEXT NOT NULL DEFAULT 'plenum-curso-v1'");
+    logger.info('Migrated tenants table: added default_template column');
+  }
 
   logger.info({ path: DB_PATH }, 'Tenant database initialized');
 }
@@ -51,19 +61,21 @@ export function createTenant(data: {
   supabase_key: string;
   storage_bucket?: string;
   storage_folder?: string;
+  default_template?: string;
 }): Tenant {
   const stmt = db.prepare(`
-    INSERT INTO tenants (name, token, supabase_url, supabase_key, storage_bucket, storage_folder)
-    VALUES (@name, @token, @supabase_url, @supabase_key, @storage_bucket, @storage_folder)
+    INSERT INTO tenants (name, token, supabase_url, supabase_key, storage_bucket, storage_folder, default_template)
+    VALUES (@name, @token, @supabase_url, @supabase_key, @storage_bucket, @storage_folder, @default_template)
   `);
 
-  const result = stmt.run({
+  stmt.run({
     name: data.name,
     token: data.token,
     supabase_url: data.supabase_url,
     supabase_key: data.supabase_key,
     storage_bucket: data.storage_bucket ?? 'pdfs',
     storage_folder: data.storage_folder ?? 'generated',
+    default_template: data.default_template ?? 'plenum-curso-v1',
   });
 
   return findTenantByToken(data.token)!;

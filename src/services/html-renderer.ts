@@ -1,9 +1,8 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import type { ViewModel } from '../schemas/view-model.js';
-import { Template } from '../../templates/plenum-curso-v1/Template.js';
+import { getTemplate } from '../../templates/registry.js';
 
 function buildCssVars(colors: Record<string, string>, fonts: { heading: string; body: string }): string {
   const vars = [
@@ -14,13 +13,15 @@ function buildCssVars(colors: Record<string, string>, fonts: { heading: string; 
   return `:root {\n${vars.join('\n')}\n}`;
 }
 
-export function renderHtml(viewModel: ViewModel): string {
-  const cssPath = path.resolve(process.cwd(), 'templates/plenum-curso-v1/styles/template.css');
-  const css = readFileSync(cssPath, 'utf-8');
+export function renderHtml(viewModel: ViewModel, templateId: string): string {
+  const entry = getTemplate(templateId);
+  if (!entry) {
+    throw new Error(`Template "${templateId}" não encontrado no registry.`);
+  }
 
+  const css = readFileSync(entry.cssPath, 'utf-8');
   const cssVars = buildCssVars(viewModel.designSystem.colors, viewModel.designSystem.fonts);
-
-  const markup = renderToStaticMarkup(React.createElement(Template, { data: viewModel }));
+  const markup = renderToStaticMarkup(React.createElement(entry.component, { data: viewModel }));
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">

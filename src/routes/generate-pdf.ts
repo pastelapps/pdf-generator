@@ -7,6 +7,7 @@ import { renderPdf } from '../services/pdf-renderer.js';
 import { uploadPdf } from '../services/storage.js';
 import { updateFolderPdfUrl } from '../services/course-updater.js';
 import { getSupabaseClient } from '../clients/supabase-factory.js';
+import { getAvailableTemplates } from '../../templates/registry.js';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -37,7 +38,7 @@ const sectionOverridesSchema = z.object({
 
 const bodySchema = z.object({
   edition_id: z.string().uuid(),
-  template: z.string().default('plenum-curso-v1'),
+  template: z.string().optional(),
   section_overrides: sectionOverridesSchema,
 });
 
@@ -52,21 +53,25 @@ export async function generatePdfRoute(app: FastifyInstance) {
       });
     }
 
-    const { edition_id, template, section_overrides } = parseResult.data;
+    const { edition_id, section_overrides } = parseResult.data;
+    const tenant = request.tenant;
 
-    if (template !== 'plenum-curso-v1') {
+    // Resolve template: body > tenant default
+    const templateId = parseResult.data.template ?? tenant.default_template;
+
+    const available = getAvailableTemplates();
+    if (!available.includes(templateId)) {
       return reply.status(400).send({
         error: 'UNSUPPORTED_TEMPLATE',
-        message: `Template "${template}" não suportado. Use "plenum-curso-v1".`,
+        message: `Template "${templateId}" não suportado. Disponíveis: ${available.join(', ')}`,
       });
     }
 
     const debug = (request.query as Record<string, string>).debug === 'true';
 
-    const tenant = request.tenant;
     const supabase = getSupabaseClient(tenant);
 
-    request.log.info({ editionId: edition_id, tenant: tenant.name }, 'Iniciando geração de PDF');
+    request.log.info({ editionId: edition_id, tenant: tenant.name, template: templateId }, 'Iniciando geração de PDF');
 
     // 1. Carregar dados
     request.log.info('Carregando dados do Supabase...');
@@ -74,11 +79,11 @@ export async function generatePdfRoute(app: FastifyInstance) {
 
     // 2. Montar ViewModel
     request.log.info('Montando ViewModel...');
-    const viewModel = buildViewModel(courseData, edition_id, section_overrides);
+    const viewModel = buildViewModel(courseData, edition_id, tenant.name, section_overrides);
 
     // 3. Renderizar HTML
     request.log.info('Renderizando HTML...');
-    const html = renderHtml(viewModel);
+    const html = renderHtml(viewModel, templateId);
 
     // Debug mode: retorna HTML direto
     if (debug) {
