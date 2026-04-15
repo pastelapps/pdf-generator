@@ -1,0 +1,13 @@
+services:
+  pdf-generator:
+    build: .
+    ports:
+      - "59542:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./output:/app/output
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=development

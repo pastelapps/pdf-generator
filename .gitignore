@@ -1,0 +1,10 @@
+node_modules/
+dist/
+output/*
+!output/.gitkeep
+!output/tmp/
+output/tmp/*
+!output/tmp/.gitkeep
+.env.local
+.DS_Store
+*.tsbuildinfo

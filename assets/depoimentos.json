@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Antonio Anastasia",
+    "role": "Ministro do Tribunal de Contas da União",
+    "quote": "Eu defendo, como professor que sou, a permanente capacitação nas mais diversas áreas. No momento em que o Instituto Plenum faz um evento como esse nós temos que aplaudir.",
+    "photo": "/assets/anastasia.png"
+  },
+  {
+    "name": "Benjamin Zymler",
+    "role": "Ministro do Tribunal de Contas da União",
+    "quote": "Capacitar gestores públicos não é um diferencial — é um requisito de governança. Em um ambiente de crescente complexidade normativa e de maior rigor no controle, a formação técnica contínua fortalece decisões, reduz riscos, melhora a qualidade do planejamento e protege a Administração Pública.",
+    "photo": "/assets/zymler.png"
+  },
+  {
+    "name": "Carlos Velloso",
+    "role": "Ministro do TSE",
+    "quote": "O Instituto ao promover a capacitação dos agentes públicos sobre o que pode e não pode fazer no período de eleição é de grande utilidade pública.",
+    "photo": "/assets/velloso.png"
+  },
+  {
+    "name": "Jarbas Soares",
+    "role": "Ex Procurador-Geral de Justiça de Minas Gerais",
+    "quote": "O gestor tem que se qualificar, preparar para gerir equipes competentes. O Instituto Plenum já adquiriu expertise e credibilidade.",
+    "photo": "/assets/jarbas.png"
+  }
+]
