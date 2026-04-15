@@ -1,4 +1,4 @@
-import { supabase } from '../clients/supabase.js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { courseSchema, type Course } from '../schemas/course.js';
 import { courseDateSchema, type CourseDate } from '../schemas/course-date.js';
 import { instructorSchema, type Instructor } from '../schemas/instructor.js';
@@ -13,7 +13,7 @@ export type CourseData = {
   designSystem: DesignSystem;
 };
 
-export async function loadCourseData(editionId: string): Promise<CourseData> {
+export async function loadCourseData(supabase: SupabaseClient, editionId: string): Promise<CourseData> {
   // 1. Buscar edição
   const { data: editionRaw, error: editionError } = await supabase
     .from('course_dates')

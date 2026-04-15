@@ -37,10 +37,10 @@ export function buildViewModel(data: CourseData, editionId: string, sectionOverr
   const assets = getAssets();
   const depoentes = loadDepoimentos();
 
-  // Build cover frame URL from course hero_frames_path + frame 1
+  // Build cover frame URL from design system hero_frames_path + frame 1
   let coverFrameUrl: string | null = null;
-  const framesPath = (course as any).hero_frames_path as string | undefined;
-  const frameExt = (course as any).hero_frame_ext as string | undefined;
+  const framesPath = (designSystem as any).hero_frames_path as string | undefined;
+  const frameExt = (designSystem as any).hero_frame_ext as string | undefined;
   if (framesPath && frameExt) {
     coverFrameUrl = `${framesPath}0001${frameExt}`;
   }

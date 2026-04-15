@@ -1,9 +1,9 @@
-import { supabase } from '../clients/supabase.js';
-import { NotFoundError, DatabaseError } from '../utils/errors.js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { DatabaseError } from '../utils/errors.js';
 import { logger } from '../logger.js';
 
-export async function updateFolderPdfUrl(editionId: string, pdfUrl: string): Promise<void> {
-  const { error, count } = await supabase
+export async function updateFolderPdfUrl(supabase: SupabaseClient, editionId: string, pdfUrl: string): Promise<void> {
+  const { error } = await supabase
     .from('course_dates')
     .update({ folder_pdf_url: pdfUrl })
     .eq('id', editionId);

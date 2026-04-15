@@ -6,6 +6,7 @@ import { renderHtml } from '../services/html-renderer.js';
 import { renderPdf } from '../services/pdf-renderer.js';
 import { uploadPdf } from '../services/storage.js';
 import { updateFolderPdfUrl } from '../services/course-updater.js';
+import { getSupabaseClient } from '../clients/supabase-factory.js';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -62,11 +63,14 @@ export async function generatePdfRoute(app: FastifyInstance) {
 
     const debug = (request.query as Record<string, string>).debug === 'true';
 
-    request.log.info({ editionId: edition_id }, 'Iniciando geração de PDF');
+    const tenant = request.tenant;
+    const supabase = getSupabaseClient(tenant);
+
+    request.log.info({ editionId: edition_id, tenant: tenant.name }, 'Iniciando geração de PDF');
 
     // 1. Carregar dados
     request.log.info('Carregando dados do Supabase...');
-    const courseData = await loadCourseData(edition_id);
+    const courseData = await loadCourseData(supabase, edition_id);
 
     // 2. Montar ViewModel
     request.log.info('Montando ViewModel...');
@@ -94,11 +98,14 @@ export async function generatePdfRoute(app: FastifyInstance) {
 
     // 6. Upload pro Supabase Storage
     request.log.info('Fazendo upload pro Supabase Storage...');
-    const pdfUrl = await uploadPdf(pdfBuffer, filename);
+    const pdfUrl = await uploadPdf(supabase, {
+      bucket: tenant.storage_bucket,
+      folder: tenant.storage_folder,
+    }, pdfBuffer, filename);
 
     // 7. Atualizar banco
     request.log.info('Atualizando folder_pdf_url no banco...');
-    await updateFolderPdfUrl(edition_id, pdfUrl);
+    await updateFolderPdfUrl(supabase, edition_id, pdfUrl);
 
     request.log.info({ pdfUrl }, 'Pipeline completo');
 

@@ -1,15 +1,24 @@
-import { supabase } from '../clients/supabase.js';
-import { config } from '../config.js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { StorageError } from '../utils/errors.js';
 import { logger } from '../logger.js';
 
-export async function uploadPdf(buffer: Buffer, filename: string): Promise<string> {
-  const filePath = `${config.SUPABASE_STORAGE_FOLDER}/${filename}`;
+export type StorageConfig = {
+  bucket: string;
+  folder: string;
+};
 
-  logger.info({ bucket: config.SUPABASE_STORAGE_BUCKET, path: filePath }, 'Fazendo upload do PDF');
+export async function uploadPdf(
+  supabase: SupabaseClient,
+  storageConfig: StorageConfig,
+  buffer: Buffer,
+  filename: string,
+): Promise<string> {
+  const filePath = `${storageConfig.folder}/${filename}`;
+
+  logger.info({ bucket: storageConfig.bucket, path: filePath }, 'Fazendo upload do PDF');
 
   const { error } = await supabase.storage
-    .from(config.SUPABASE_STORAGE_BUCKET)
+    .from(storageConfig.bucket)
     .upload(filePath, buffer, {
       contentType: 'application/pdf',
       upsert: true,
@@ -20,7 +29,7 @@ export async function uploadPdf(buffer: Buffer, filename: string): Promise<strin
   }
 
   const { data: urlData } = supabase.storage
-    .from(config.SUPABASE_STORAGE_BUCKET)
+    .from(storageConfig.bucket)
     .getPublicUrl(filePath);
 
   logger.info({ url: urlData.publicUrl }, 'PDF uploaded com sucesso');

@@ -4,6 +4,8 @@ import { config } from './config.js';
 import { logger } from './logger.js';
 import { healthRoute } from './routes/health.js';
 import { generatePdfRoute } from './routes/generate-pdf.js';
+import { authMiddleware } from './middleware/auth.js';
+import { initTenantDb } from './clients/tenant-db.js';
 import { AppError } from './utils/errors.js';
 
 const app = Fastify({
@@ -50,7 +52,11 @@ app.setErrorHandler((error, request, reply) => {
   });
 });
 
+// Inicializar SQLite de tenants
+initTenantDb();
+
 await app.register(cors, { origin: true });
+await app.register(authMiddleware);
 
 await app.register(healthRoute);
 await app.register(generatePdfRoute);
