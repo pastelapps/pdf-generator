@@ -124,8 +124,8 @@ export function Apresentacao({ data }: Props) {
     flexShrink: 0,
   };
 
-  // Build apresentação text: use aboutDescription if available, else aboutSubheading
-  const apresentacaoText = data.course.aboutDescription || data.course.aboutSubheading || '';
+  // Build apresentação text: prefer folderPresentation, fallback to aboutDescription
+  const apresentacaoText = data.course.folderPresentation || data.course.aboutDescription || data.course.aboutSubheading || '';
 
   return (
     <div style={page} className="page-break">
@@ -166,7 +166,7 @@ export function Apresentacao({ data }: Props) {
             <img src={data.assets.iconeCargaHoraria} alt="Carga Horária" style={infoIconStyle} />
             <div>
               <div style={infoLabelStyle}>Carga Hor&aacute;ria</div>
-              <div style={infoValueStyle}>{data.course.categoryLabel || '20h'}</div>
+              <div style={infoValueStyle}>{data.course.workload ? `${data.course.workload}h` : '20h'}</div>
             </div>
           </div>
 
