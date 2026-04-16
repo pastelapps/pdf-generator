@@ -66,13 +66,28 @@ Estes parâmetros são enviados dentro de `template_params` e controlam conteúd
 
 > **No frontend:** usar um `<select>` com 3 opções.
 
-### 5.2 Proposta Comercial (opcional)
+### 5.2 Modo Comercial e Proposta Comercial
+
+O PDF pode ser gerado em dois modos:
+
+- **Modo Padrão (não-comercial):** PDF institucional sem preço. Usado para divulgação geral.
+- **Modo Comercial:** PDF com o valor da proposta exibido na última página. Usado para enviar propostas a clientes específicos.
 
 | Parâmetro | Nome no Front | Observação |
 |-----------|---------------|------------|
-| `template_params.proposta_comercial.valor` | Valor da Proposta Comercial (R$) | Se preenchido, exibe o valor "R$ {valor}*" na página de encerramento. Se vazio, não exibe preço. Ex: `"1.990,00"` |
+| (toggle) | PDF Comercial | Toggle/checkbox na tela. Quando ativado, exibe o campo de valor abaixo. Quando desativado, gera PDF sem preço |
+| `template_params.proposta_comercial.valor` | Valor da Proposta (R$) | Só aparece quando "PDF Comercial" está ativado. Exibe "R$ {valor}*" na última página do PDF. Ex: `"1.990,00"` |
 
-> **No frontend:** campo de texto. Se vazio, omitir o objeto `proposta_comercial` inteiro do JSON.
+> **No frontend:** criar um toggle/checkbox "PDF Comercial" no topo do formulário. Quando ativado, exibir o campo "Valor da Proposta (R$)". Quando desativado, ocultar o campo e **omitir o objeto `proposta_comercial` inteiro do JSON** — isso gera o PDF sem preço.
+>
+> ```
+> ┌─────────────────────────────────────────────────┐
+> │  [✓] PDF Comercial                              │
+> │                                                 │
+> │  Valor da Proposta (R$): [  1.990,00  ]         │
+> │  (Exibe o preço na última página do PDF)        │
+> └─────────────────────────────────────────────────┘
+> ```
 
 ### 5.3 Capa — Foto e Professores (opcional)
 
