@@ -75,18 +75,49 @@ O PDF pode ser gerado em dois modos:
 
 | Parâmetro | Nome no Front | Observação |
 |-----------|---------------|------------|
-| (toggle) | PDF Comercial | Toggle/checkbox na tela. Quando ativado, exibe o campo de valor abaixo. Quando desativado, gera PDF sem preço |
-| `template_params.proposta_comercial.valor` | Valor da Proposta (R$) | Só aparece quando "PDF Comercial" está ativado. Exibe "R$ {valor}*" na última página do PDF. Ex: `"1.990,00"` |
+| (toggle) | Gerar PDF Comercial | Toggle chamativo na tela. Quando ativado, exibe o campo de valor abaixo e torna o preenchimento obrigatório. Quando desativado, gera PDF sem preço |
+| `template_params.proposta_comercial.valor` | Valor da Proposta (R$) | **Obrigatório quando modo comercial ativo.** Exibe "R$ {valor}*" na última página do PDF. Ex: `"1.990,00"` |
 
-> **No frontend:** criar um toggle/checkbox "PDF Comercial" no topo do formulário. Quando ativado, exibir o campo "Valor da Proposta (R$)". Quando desativado, ocultar o campo e **omitir o objeto `proposta_comercial` inteiro do JSON** — isso gera o PDF sem preço.
+> **IMPORTANTE — Implementação no frontend:**
+>
+> Criar um componente chamativo e destacado (card com cor diferente ou borda de destaque) para o modo comercial. O toggle deve ser visualmente claro para o operador entender que está gerando um PDF com preço.
+>
+> **Regras de comportamento:**
+> 1. Quando o toggle "Gerar PDF Comercial" está **desativado**: o campo de valor fica oculto. O PDF é gerado sem preço.
+> 2. Quando o toggle é **ativado**: o campo "Valor da Proposta (R$)" aparece e se torna **obrigatório**. O botão "Gerar PDF" deve ficar **desabilitado** até que o valor seja preenchido.
+> 3. O campo de valor deve ter **validação**: não pode estar vazio, deve aceitar apenas números e formatação monetária (ex: `1.990,00`).
+> 4. Quando desativado novamente, limpar o campo de valor e **omitir o objeto `proposta_comercial` inteiro do JSON**.
+>
+> **Mockup sugerido:**
 >
 > ```
-> ┌─────────────────────────────────────────────────┐
-> │  [✓] PDF Comercial                              │
-> │                                                 │
-> │  Valor da Proposta (R$): [  1.990,00  ]         │
-> │  (Exibe o preço na última página do PDF)        │
-> └─────────────────────────────────────────────────┘
+> ┌─────────────────────────────────────────────────────────┐
+> │  💼 PROPOSTA COMERCIAL                                  │
+> │  ─────────────────────────────────────────────────────  │
+> │                                                         │
+> │  [✓] Gerar PDF Comercial                                │
+> │                                                         │
+> │  ┌───────────────────────────────────────────────────┐  │
+> │  │  Valor da Proposta *                              │  │
+> │  │                                                   │  │
+> │  │  R$ [  1.990,00                                ]  │  │
+> │  │                                                   │  │
+> │  │  ⚠ Este valor será exibido na última página       │  │
+> │  │    do PDF enviado ao cliente                      │  │
+> │  └───────────────────────────────────────────────────┘  │
+> └─────────────────────────────────────────────────────────┘
+> ```
+>
+> Quando desativado:
+> ```
+> ┌─────────────────────────────────────────────────────────┐
+> │  💼 PROPOSTA COMERCIAL                                  │
+> │  ─────────────────────────────────────────────────────  │
+> │                                                         │
+> │  [ ] Gerar PDF Comercial                                │
+> │                                                         │
+> │  PDF será gerado sem valor de proposta.                 │
+> └─────────────────────────────────────────────────────────┘
 > ```
 
 ### 5.3 Capa — Foto e Professores (opcional)
