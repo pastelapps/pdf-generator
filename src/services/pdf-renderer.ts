@@ -16,8 +16,12 @@ export async function renderPdf(html: string): Promise<Buffer> {
   let browser;
   try {
     browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext();
+    const context = await browser.newContext({
+      deviceScaleFactor: 2,
+      screen: { width: 794, height: 1123 },
+    });
     const page = await context.newPage();
+    await page.setViewportSize({ width: 794, height: 1123 });
 
     await page.goto(`file://${tmpPath}`, {
       waitUntil: 'networkidle',
@@ -30,6 +34,7 @@ export async function renderPdf(html: string): Promise<Buffer> {
       format: 'A4',
       printBackground: true,
       preferCSSPageSize: true,
+      scale: 1,
     });
 
     await page.close();
