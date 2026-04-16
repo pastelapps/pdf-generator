@@ -45,6 +45,7 @@ export function Apresentacao({ data }: Props) {
     color: '#ffffff',
     lineHeight: 1.55,
     marginBottom: bottomMargin,
+    textAlign: 'justify',
   };
 
   const twoColStyle: React.CSSProperties = {
