@@ -2,6 +2,7 @@ import type { CeapCourseData } from './ceap-course-loader.js';
 import type { CeapViewModel, CeapSectionOverrides } from '../schemas/ceap-view-model.js';
 import { getCeapAssets } from '../utils/asset-resolver.js';
 import { normalizeProgramDays } from '../utils/program-normalizer.js';
+import type { NormalizedProgramDay } from '../utils/program-normalizer.js';
 
 export type CeapTemplateParams = {
   proposta_comercial?: { valor: string };
@@ -43,7 +44,20 @@ export function buildCeapViewModel(
 
   const assets = getCeapAssets(tenantName);
 
-  const programDays = normalizeProgramDays(course.program_days as any);
+  // Prefer folder_syllabus (detailed with dates/times) over program_days
+  let programDays: NormalizedProgramDay[];
+  if (course.folder_syllabus && course.folder_syllabus.length > 0) {
+    programDays = course.folder_syllabus.map(item => ({
+      tag: item.date,
+      time: item.time || '',
+      title: item.title || '',
+      topics: (item.topics || []).map(t => ({ text: t, children: [] })),
+      description: '',
+      kind: (item.topics && item.topics.length > 0 ? 'bullets' : 'paragraph') as 'bullets' | 'paragraph',
+    }));
+  } else {
+    programDays = normalizeProgramDays(course.program_days as any);
+  }
 
   const colors: Record<string, string> = {
     '--color-primary': designSystem.color_primary,
@@ -86,6 +100,8 @@ export function buildCeapViewModel(
       programHeading: course.program_heading || '',
       programDescription: course.program_description || '',
       programDays,
+      folderPresentation: course.folder_presentation || '',
+      workload: course.workload || '',
       dateLabel: course.date_label || '',
       locationVenue: course.location_venue || '',
       locationAddress: course.location_address || '',

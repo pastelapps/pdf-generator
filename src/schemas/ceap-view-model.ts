@@ -56,6 +56,8 @@ export type CeapViewModel = {
       description: string;
       kind: 'bullets' | 'paragraph';
     }>;
+    folderPresentation: string;
+    workload: string;
     dateLabel: string;
     locationVenue: string;
     locationAddress: string;

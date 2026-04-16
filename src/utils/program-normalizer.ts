@@ -1,5 +1,3 @@
-import type { ProgramDay } from '../schemas/course-date.js';
-
 export type NormalizedProgramDay = {
   tag: string;
   time: string;
@@ -9,9 +7,17 @@ export type NormalizedProgramDay = {
   kind: 'bullets' | 'paragraph';
 };
 
+type ProgramDayInput = {
+  tag: string;
+  time?: string;
+  title: string;
+  topics?: Array<{ text: string; children?: Array<{ text: string; children?: any[] }> }>;
+  description?: string;
+};
+
 const TIME_IN_TAG_REGEX = /\s*[·•\-–—]\s*(\d{1,2}:\d{2}\s*(?:às|a)\s*\d{1,2}:\d{2})\s*$/i;
 
-export function normalizeProgramDays(days: ProgramDay[]): NormalizedProgramDay[] {
+export function normalizeProgramDays(days: ProgramDayInput[]): NormalizedProgramDay[] {
   return days.map(day => {
     let tag = day.tag;
     let time = day.time || '';
