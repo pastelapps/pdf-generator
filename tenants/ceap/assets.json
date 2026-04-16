@@ -1,7 +1,17 @@
 {
-  "logoColorido": "",
-  "logoBranco": "",
-  "kitParticipante": "",
-  "instituicoes": "",
-  "fotosEvento": []
+  "background1": "Background_1.png",
+  "background2": "Backglound_2.png",
+  "backgroundE": "backgound_e.png",
+  "backgroundProgramacao": "background_programacao.png",
+  "kitDoAluno": "kitdoaluno.png",
+  "medalha": "medalha.png",
+  "licittoguru": "licittoguru.png",
+  "footerPlataforma": "footerplataforma.png",
+  "logoCeapColorido": "logo-ceap-colorido.png",
+  "logoCeapBranco": "logo-ceap-branco.png",
+  "backgroundFinalLicittoguru": "background_final_licitoguru.png",
+  "iconeAlvo": "icone_alvo.svg",
+  "iconeCargaHoraria": "icone_carga_horaria.svg",
+  "iconeData": "icone_data.svg",
+  "iconeLocal": "icone local.svg"
 }
