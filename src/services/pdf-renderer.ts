@@ -17,7 +17,7 @@ export async function renderPdf(html: string): Promise<Buffer> {
   try {
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({
-      deviceScaleFactor: 2,
+      deviceScaleFactor: 4,
       screen: { width: 794, height: 1123 },
     });
     const page = await context.newPage();
